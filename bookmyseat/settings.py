@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-DATABASES['default'] = dj_database_url.parse('postgresql://django_bookmyshow_user:uF7eu2GnnDbqvUgYswCYpIS5TKTtsAUS@dpg-cshi84o8fa8c739dsme0-a.oregon-postgres.render.com/django_bookmyshow')
+DATABASE_URL='postgresql://ridhamgupta805gmail.com@127.0.0.1:5432/bookmyseat'
 # 
 
 # Password validation
