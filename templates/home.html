@@ -1,398 +1,1267 @@
-{% extends "users/basic.html" %} {% block content %}
-<style>
-    body {
-      font-family: "Arial", sans-serif;
-      background-color: #f8f9fa;
-    }
-    .section-title {
-      font-size: 24px;
-      font-weight: bold;
-      margin: 30px 0 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #007bff;
-      color: #333;
-    }
-    .card {
-      transition: transform 0.3s, box-shadow 0.3s;
-      margin-bottom: 20px;
-      border: none;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    }
-    .card-img-top {
-      object-fit: cover;
-    }
-    .card-body {
-      background-color: #fff;
-      padding: 15px;
-    }
-    .card-title {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 5px;
-    }
-    .card-text {
-      font-size: 14px;
-      color: #666;
-    }
-    .carousel-item img {
-      object-fit: cover;
-    }
-    .carousel-caption {
-      background: rgba(0, 0, 0, 0.5);
-      border-radius: 10px;
-      padding: 20px;
-    }
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-    .btn-primary:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
-    }
-  </style>
-  
-  <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
-    <ol class="carousel-indicators">
-      <li
-        data-target="#carouselExampleIndicators"
-        data-slide-to="0"
-        class="active"
-      ></li>
-      <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-      <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-    </ol>
-    <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img
-          class="d-block w-100"
-          src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg"
-          alt="First slide"
-          height="300"
-        />
-      </div>
-      <div class="carousel-item">
-        <img
-          class="d-block w-100"
-          src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg"
-          alt="Second slide"
-          height="300"
-        />
-      </div>
-      <div class="carousel-item">
-        <img
-          class="d-block w-100"
-          src="https://assets-in.bmscdn.com/promotions/cms/creatives/1729172081740_sorcar1240x300.jpg"
-          alt="Third slide"
-          height="300"
-        />
-      </div>
-    </div>
-    <a
-      class="carousel-control-prev"
-      href="#carouselExampleIndicators"
-      role="button"
-      data-slide="prev"
-    >
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="sr-only">Previous</span>
-    </a>
-    <a
-      class="carousel-control-next"
-      href="#carouselExampleIndicators"
-      role="button"
-      data-slide="next"
-    >
-      <span class="carousel-control-next-icon" aria-hidden="true"></span>
-      <span class="sr-only">Next</span>
-    </a>
-  </div>
-  
-  <div class="container mt-4">
-    {% if not user.is_authenticated %}
-    <div class="alert alert-info" role="alert">
-      <a href="{% url 'login' %}" class="alert-link">Login</a> or
-      <a href="{% url 'register' %}" class="alert-link">Register</a> to continue.
-    </div>
-    {% endif %}
-  
-    <div class="section-title">Recommended Movies</div>
-    <div class="row">
-        {% if movies %}
-      {% for movie in movies|slice:":4" %}
-      <div class="col-md-3 col-sm-6">
-        <!-- Wrap the card in an anchor to make the entire card clickable -->
-        <a href="{% url 'theater_list' movie.id %}" class="text-decoration-none">
-          <div class="card h-100">
-            <img
-              src="{{ movie.image.url }}"
-              class="card-img-top"
-              alt="{{ movie.name }}"
-              height="300"
-            />
-            <div class="card-body d-flex flex-column justify-content-between">
-              <h5 class="card-title text-center">{{ movie.name }}</h5>
-              <p class="card-text text-center">{{ movie.description }}</p>
-              <!-- Replace with the appropriate movie description field -->
-            </div>
-          </div>
-        </a>
-      </div>
-      {% endfor %}
-      {% endif %}
-    </div>
-  
-    <div class="section-title">The Best of Live Events</div>
-    <div class="row">
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/wQXDIlqv4XoxGtNEO9XkSKBZYe9IuDePUWEcd0WwqcNzY5nTA.jpg"
-            class="card-img-top"
-            alt="Event 1"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 1</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/t52p8goZiO6QDBfid8wRyReanID18f5AxbszVhfPgESGklfcC.jpg"
-            class="card-img-top"
-            alt="Event 2"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 2</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/lAqCOht0TCaeSSLzw2ZGlPmDwvIEI3RtqajPoTYQN0ZOs8zJA.jpg"
-            class="card-img-top"
-            alt="Event 3"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 3</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/EyIkuIxpLaLyHBDEuu5hezeydhw0mOSjKWX71bUiuTBiY5nTA.jpg"
-            class="card-img-top"
-            alt="Event 4"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 4</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/3QTKm2zD4e1OR6tqfvQrePQ9gJF0K8ecA4loyO4cJShYilfcC.jpg"
-            class="card-img-top"
-            alt="Event 5"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 5</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/g1fZzG6zyC1oe0HCfeQyRcjQ76fODp2HfaewYUqYpex1ZY5nTA.jpg"
-            class="card-img-top"
-            alt="Event 6"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Event 6</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <div class="section-title">Premiere</div>
-    <div class="row">
-      <div class="col-md-3 col-sm-6">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/FJ64xM1AcD6FHJgA4oa0cGJSW3VudRGcPJEJxZG7eUNjs8zJA.jpg"
-            class="card-img-top"
-            alt="Premiere 1"
-            height="300"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Premiere 1</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/2u07aGlpRdZ2P57Q7MmUcimgjPcxfzjp0iwmTHsAFxGYs8zJA.jpg"
-            class="card-img-top"
-            alt="Premiere 2"
-            height="300"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Premiere 2</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/Eej0GoGFir1bLKOhfwpnUtyhbKe9I1OJUvnBVe1IObpPilfcC.jpg"
-            class="card-img-top"
-            alt="Premiere 3"
-            height="300"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Premiere 3</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3 col-sm-6">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/HKg2EfFn2vXCFShRqFsKrlmxZk7Oy6jr4fqQ4utln0eiyyPnA.jpg"
-            class="card-img-top"
-            alt="Premiere 4"
-            height="300"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Premiere 4</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-    <div class="section-title">Your Music Studio</div>
-    <div class="row">
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/Zxtj3kZfruT2C6wMYczKgyM03Ze2ymna5Pb3JCYppPtDZ5nTA.jpg"
-            class="card-img-top"
-            alt="Music 1"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 1</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/QLgGQKkllUJYJx57RJFjsciWnbG6MOb86lxqu7ijGDpLWezJA.jpg"
-            class="card-img-top"
-            alt="Music 2"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 2</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/xhrRnZeebRlinUxh914TpWK6sz42j8Wb2yHbK7DVTHP5Y5nTA.jpg"
-            class="card-img-top"
-            alt="Music 3"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 3</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/Bcmw5fvYWMW9UC4Y27iH8pB9vgFcIcN1Wx3jeHy7nvM8Y5nTA.jpg"
-            class="card-img-top"
-            alt="Music 4"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 4</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/uhbJueHHYVSiACSIZtetP8XiaCue0OmBZ24Cglkz4XjbxyPnA.jpg"
-            class="card-img-top"
-            alt="Music 5"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 5</h5>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-2 col-sm-4">
-        <div class="card">
-          <img
-            src="https://storage.googleapis.com/a1aa/image/1nzFNOrM8ErwFtx8e2JxDvB5fCje3g286SyfRnBR5JB2jlfcC.jpg"
-            class="card-img-top"
-            alt="Music 6"
-            height="200"
-          />
-          <div class="card-body">
-            <h5 class="card-title">Music 6</h5>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script>
-    $(document).ready(function () {
-      $(".card").hover(
-        function () {
-          $(this).addClass("shadow-lg").css("cursor", "pointer");
-        },
-        function () {
-          $(this).removeClass("shadow-lg");
-        }
-      );
-    });
-  </script>
+```django
+{% extends "users/basic.html" %}
 
-<!-- <h1>Movies</h1>
-<ul>
-    {% for movie in movies%}
-    <li>
-        <img src="{{movie.image.url}}" alt="image" >
-        <strong>{{movie.name}}</strong>{{movie.rating}}
-        <p>Cast:{{movie.cast}}</p>
-        <a href="{% url 'theater_list' movie.id %}">View Theaters</a>
-    </li>
-    {% endfor %}
-</ul> -->
+{% block title %}Home | BookMySeat{% endblock %}
+
+{% block content %}
+
+<style>
+    /* =========================================================
+       BOOKMYSEAT HOME PAGE
+    ========================================================= */
+
+    .home-page {
+        background: #0b0b0f;
+        color: #ffffff;
+        min-height: 100vh;
+        padding-bottom: 60px;
+    }
+
+    /* =========================================================
+       HERO CAROUSEL
+    ========================================================= */
+
+    .hero-section {
+        position: relative;
+        background: #08080b;
+        overflow: hidden;
+    }
+
+    .hero-carousel {
+        position: relative;
+    }
+
+    .hero-carousel .carousel-item {
+        position: relative;
+        height: 390px;
+        overflow: hidden;
+    }
+
+    .hero-carousel .carousel-item::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(0, 0, 0, 0.05),
+                rgba(0, 0, 0, 0.75)
+            );
+        pointer-events: none;
+    }
+
+    .hero-carousel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .hero-caption {
+        position: absolute;
+        z-index: 2;
+        left: 8%;
+        bottom: 55px;
+        max-width: 500px;
+        text-align: left;
+    }
+
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 12px;
+        margin-bottom: 12px;
+        border-radius: 30px;
+        background: rgba(229, 9, 20, 0.9);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+    }
+
+    .hero-caption h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 34px;
+        font-weight: 800;
+        text-shadow: 0 4px 20px rgba(0, 0, 0, 0.65);
+    }
+
+    .hero-caption p {
+        margin: 8px 0 0;
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 14px;
+    }
+
+    .hero-carousel .carousel-indicators {
+        z-index: 4;
+        bottom: 12px;
+    }
+
+    .hero-carousel .carousel-indicators li {
+        width: 25px;
+        height: 4px;
+        border: 0;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.4);
+    }
+
+    .hero-carousel .carousel-indicators .active {
+        background: #e50914;
+    }
+
+    .hero-control {
+        z-index: 3;
+        width: 55px;
+    }
+
+    .hero-control-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        font-size: 17px;
+    }
+
+    /* =========================================================
+       PAGE CONTAINER
+    ========================================================= */
+
+    .home-container {
+        max-width: 1250px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* =========================================================
+       LOGIN ALERT
+    ========================================================= */
+
+    .login-alert {
+        margin: 25px 0 5px;
+        padding: 14px 18px;
+        border-radius: 12px;
+        background: rgba(229, 9, 20, 0.08);
+        border: 1px solid rgba(229, 9, 20, 0.25);
+        color: #b9b9c2;
+        font-size: 14px;
+    }
+
+    .login-alert i {
+        color: #e50914;
+        margin-right: 7px;
+    }
+
+    .login-alert a {
+        color: #ff3942;
+        font-weight: 700;
+        text-decoration: none;
+    }
+
+    .login-alert a:hover {
+        color: #ffffff;
+    }
+
+    /* =========================================================
+       SECTION HEADER
+    ========================================================= */
+
+    .home-section {
+        margin-top: 45px;
+    }
+
+    .section-heading {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .section-heading-left {
+        position: relative;
+        padding-left: 14px;
+    }
+
+    .section-heading-left::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 4px;
+        bottom: 4px;
+        width: 4px;
+        border-radius: 5px;
+        background: #e50914;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 23px;
+        font-weight: 750;
+    }
+
+    .section-heading p {
+        margin: 4px 0 0;
+        color: #777780;
+        font-size: 13px;
+    }
+
+    .view-all {
+        color: #e50914;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+    .view-all:hover {
+        color: #ff3942;
+        text-decoration: none;
+    }
+
+    /* =========================================================
+       MOVIE CARDS
+    ========================================================= */
+
+    .movie-card-link {
+        display: block;
+        height: 100%;
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .movie-card-link:hover {
+        color: inherit;
+        text-decoration: none;
+    }
+
+    .movie-card {
+        height: 100%;
+        overflow: hidden;
+        background: #15151b;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 14px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.28);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-7px);
+        border-color: rgba(229, 9, 20, 0.45);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    .movie-poster {
+        position: relative;
+        height: 330px;
+        overflow: hidden;
+        background: #101015;
+    }
+
+    .movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .movie-card:hover .movie-poster img {
+        transform: scale(1.05);
+    }
+
+    .movie-poster::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.55),
+            transparent 45%
+        );
+        pointer-events: none;
+    }
+
+    .movie-rating {
+        position: absolute;
+        z-index: 2;
+        left: 10px;
+        bottom: 10px;
+        padding: 5px 8px;
+        border-radius: 6px;
+        background: rgba(0, 0, 0, 0.75);
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .movie-rating i {
+        color: #ffc107;
+        margin-right: 3px;
+    }
+
+    .movie-info {
+        padding: 15px;
+    }
+
+    .movie-title {
+        margin: 0 0 7px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .movie-description {
+        height: 40px;
+        margin: 0;
+        overflow: hidden;
+        color: #858590;
+        font-size: 12px;
+        line-height: 1.6;
+    }
+
+    .book-movie {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 13px;
+        color: #e50914;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .movie-card:hover .book-movie {
+        color: #ff3942;
+    }
+
+    /* =========================================================
+       CATEGORY CARDS
+    ========================================================= */
+
+    .category-card {
+        position: relative;
+        height: 205px;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #15151b;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        transition: all 0.3s ease;
+    }
+
+    .category-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(229, 9, 20, 0.4);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .category-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .category-card:hover img {
+        transform: scale(1.07);
+    }
+
+    .category-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: flex-end;
+        padding: 16px;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.9),
+            rgba(0, 0, 0, 0.05)
+        );
+    }
+
+    .category-overlay h5 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    /* =========================================================
+       PREMIERE CARDS
+    ========================================================= */
+
+    .premiere-card {
+        position: relative;
+        overflow: hidden;
+        height: 310px;
+        border-radius: 14px;
+        background: #15151b;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .premiere-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .premiere-card:hover img {
+        transform: scale(1.05);
+    }
+
+    .premiere-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: flex-end;
+        padding: 18px;
+        background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.9),
+            transparent 55%
+        );
+    }
+
+    .premiere-overlay h5 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .premiere-label {
+        display: inline-block;
+        margin-bottom: 7px;
+        padding: 4px 8px;
+        border-radius: 4px;
+        background: #e50914;
+        color: #ffffff;
+        font-size: 9px;
+        font-weight: 800;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+    }
+
+    /* =========================================================
+       EMPTY MOVIE STATE
+    ========================================================= */
+
+    .empty-movies {
+        width: 100%;
+        padding: 50px 20px;
+        border: 1px dashed #303039;
+        border-radius: 14px;
+        text-align: center;
+        background: #111116;
+    }
+
+    .empty-movies i {
+        color: #e50914;
+        font-size: 34px;
+        margin-bottom: 12px;
+    }
+
+    .empty-movies h5 {
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .empty-movies p {
+        color: #777780;
+        margin: 0;
+        font-size: 13px;
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media (max-width: 991px) {
+        .hero-carousel .carousel-item {
+            height: 330px;
+        }
+
+        .hero-caption {
+            left: 6%;
+            bottom: 45px;
+        }
+
+        .hero-caption h2 {
+            font-size: 28px;
+        }
+
+        .movie-poster {
+            height: 290px;
+        }
+
+        .premiere-card {
+            height: 280px;
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        .home-container {
+            padding: 0 14px;
+        }
+
+        .hero-carousel .carousel-item {
+            height: 250px;
+        }
+
+        .hero-caption {
+            left: 20px;
+            bottom: 35px;
+            right: 20px;
+        }
+
+        .hero-caption h2 {
+            font-size: 22px;
+        }
+
+        .hero-caption p {
+            display: none;
+        }
+
+        .hero-badge {
+            font-size: 9px;
+            padding: 5px 9px;
+        }
+
+        .section-heading h2 {
+            font-size: 19px;
+        }
+
+        .section-heading p {
+            display: none;
+        }
+
+        .view-all {
+            font-size: 12px;
+        }
+
+        .movie-poster {
+            height: 260px;
+        }
+
+        .category-card {
+            height: 170px;
+        }
+
+        .premiere-card {
+            height: 250px;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .hero-carousel .carousel-item {
+            height: 210px;
+        }
+
+        .hero-caption {
+            bottom: 30px;
+        }
+
+        .hero-caption h2 {
+            font-size: 19px;
+        }
+
+        .hero-control {
+            width: 40px;
+        }
+
+        .hero-control-icon {
+            width: 34px;
+            height: 34px;
+            font-size: 13px;
+        }
+
+        .movie-poster {
+            height: 230px;
+        }
+
+        .movie-info {
+            padding: 12px;
+        }
+
+        .movie-title {
+            font-size: 14px;
+        }
+
+        .movie-description {
+            font-size: 11px;
+        }
+    }
+</style>
+
+
+<div class="home-page">
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <section class="hero-section">
+
+        <div id="bookMySeatHero"
+             class="carousel slide hero-carousel"
+             data-ride="carousel"
+             data-interval="4500">
+
+            <ol class="carousel-indicators">
+                <li data-target="#bookMySeatHero"
+                    data-slide-to="0"
+                    class="active"></li>
+
+                <li data-target="#bookMySeatHero"
+                    data-slide-to="1"></li>
+
+                <li data-target="#bookMySeatHero"
+                    data-slide-to="2"></li>
+            </ol>
+
+
+            <div class="carousel-inner">
+
+                <div class="carousel-item active">
+
+                    <img
+                        src="https://assets-in.bmscdn.com/promotions/cms/creatives/1728390794440_bandlanddesktop.jpg"
+                        alt="BookMySeat featured event">
+
+                    <div class="hero-caption">
+                        <span class="hero-badge">
+                            <i class="fas fa-fire"></i>
+                            Featured
+                        </span>
+
+                        <h2>Experience Entertainment Like Never Before</h2>
+
+                        <p>
+                            Movies, events and unforgettable experiences —
+                            all in one place.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="carousel-item">
+
+                    <img
+                        src="https://assets-in.bmscdn.com/promotions/cms/creatives/1726036566435_playcardnewweb.jpg"
+                        alt="BookMySeat entertainment">
+
+                    <div class="hero-caption">
+                        <span class="hero-badge">
+                            <i class="fas fa-star"></i>
+                            Trending
+                        </span>
+
+                        <h2>Find Your Next Favorite Experience</h2>
+
+                        <p>
+                            Discover what's happening near you.
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <div class="carousel-item">
+
+                    <img
+                        src="https://assets-in.bmscdn.com/promotions/cms/creatives/1729172081740_sorcar1240x300.jpg"
+                        alt="BookMySeat live events">
+
+                    <div class="hero-caption">
+                        <span class="hero-badge">
+                            <i class="fas fa-ticket-alt"></i>
+                            Book Now
+                        </span>
+
+                        <h2>Your Seat. Your Show. Your Experience.</h2>
+
+                        <p>
+                            Book your next entertainment experience today.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <a class="carousel-control-prev hero-control"
+               href="#bookMySeatHero"
+               role="button"
+               data-slide="prev">
+
+                <span class="hero-control-icon">
+                    <i class="fas fa-chevron-left"></i>
+                </span>
+
+                <span class="sr-only">Previous</span>
+
+            </a>
+
+
+            <a class="carousel-control-next hero-control"
+               href="#bookMySeatHero"
+               role="button"
+               data-slide="next">
+
+                <span class="hero-control-icon">
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+
+                <span class="sr-only">Next</span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <div class="home-container">
+
+        <!-- LOGIN MESSAGE -->
+
+        {% if not user.is_authenticated %}
+
+            <div class="login-alert">
+
+                <i class="fas fa-info-circle"></i>
+
+                <a href="{% url 'login' %}">Login</a>
+                or
+                <a href="{% url 'register' %}">Register</a>
+                to book your favorite movies.
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             RECOMMENDED MOVIES
+        ================================================== -->
+
+        <section class="home-section">
+
+            <div class="section-heading">
+
+                <div class="section-heading-left">
+
+                    <h2>Recommended Movies</h2>
+
+                    <p>
+                        Discover movies worth watching
+                    </p>
+
+                </div>
+
+                <a href="{% url 'movie_list' %}"
+                   class="view-all">
+
+                    View All
+                    <i class="fas fa-chevron-right ms-1"></i>
+
+                </a>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                {% if movies %}
+
+                    {% for movie in movies|slice:":4" %}
+
+                        <div class="col-6 col-md-3">
+
+                            <a href="{% url 'theater_list' movie.id %}"
+                               class="movie-card-link">
+
+                                <div class="movie-card">
+
+                                    <div class="movie-poster">
+
+                                        {% if movie.image %}
+
+                                            <img
+                                                src="{{ movie.image.url }}"
+                                                alt="{{ movie.name }}"
+                                                loading="lazy">
+
+                                        {% else %}
+
+                                            <div class="d-flex align-items-center justify-content-center h-100">
+                                                <i class="fas fa-film fa-2x text-muted"></i>
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        {% if movie.rating %}
+
+                                            <div class="movie-rating">
+
+                                                <i class="fas fa-star"></i>
+
+                                                {{ movie.rating }}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    <div class="movie-info">
+
+                                        <h5 class="movie-title">
+                                            {{ movie.name }}
+                                        </h5>
+
+                                        <p class="movie-description">
+                                            {{ movie.description }}
+                                        </p>
+
+                                        <span class="book-movie">
+                                            Book Tickets
+                                            <i class="fas fa-arrow-right"></i>
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="col-12">
+
+                        <div class="empty-movies">
+
+                            <i class="fas fa-film"></i>
+
+                            <h5>No Movies Available</h5>
+
+                            <p>
+                                Check back soon for new movies.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             LIVE EVENTS
+        ================================================== -->
+
+        <section class="home-section">
+
+            <div class="section-heading">
+
+                <div class="section-heading-left">
+
+                    <h2>The Best of Live Events</h2>
+
+                    <p>
+                        Concerts, shows and unforgettable experiences
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/wQXDIlqv4XoxGtNEO9XkSKBZYe9IuDePUWEcd0WwqcNzY5nTA.jpg"
+                            alt="Live Event 1"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Live Events</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/t52p8goZiO6QDBfid8wRyReanID18f5AxbszVhfPgESGklfcC.jpg"
+                            alt="Live Event 2"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Comedy Shows</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/lAqCOht0TCaeSSLzw2ZGlPmDwvIEI3RtqajPoTYQN0ZOs8zJA.jpg"
+                            alt="Live Event 3"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Concerts</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/EyIkuIxpLaLyHBDEuu5hezeydhw0mOSjKWX71bUiuTBiY5nTA.jpg"
+                            alt="Live Event 4"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Workshops</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/3QTKm2zD4e1OR6tqfvQrePQ9gJF0K8ecA4loyO4cJShYilfcC.jpg"
+                            alt="Live Event 5"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Experiences</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <div class="category-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/g1fZzG6zyC1oe0HCfeQyRcjQ76fODp2HfaewYUqYpex1ZY5nTA.jpg"
+                            alt="Live Event 6"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Entertainment</h5>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PREMIERE
+        ================================================== -->
+
+        <section class="home-section">
+
+            <div class="section-heading">
+
+                <div class="section-heading-left">
+
+                    <h2>Premiere</h2>
+
+                    <p>
+                        Premium entertainment picks
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-4">
+
+                <div class="col-6 col-md-3">
+
+                    <div class="premiere-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/FJ64xM1AcD6FHJgA4oa0cGJSW3VudRGcPJEJxZG7eUNjs8zJA.jpg"
+                            alt="Premiere 1"
+                            loading="lazy">
+
+                        <div class="premiere-overlay">
+
+                            <div>
+                                <span class="premiere-label">
+                                    Premiere
+                                </span>
+
+                                <h5>Premium Experience</h5>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="premiere-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/2u07aGlpRdZ2P57Q7MmUcimgjPcxfzjp0iwmTHsAFxGYs8zJA.jpg"
+                            alt="Premiere 2"
+                            loading="lazy">
+
+                        <div class="premiere-overlay">
+
+                            <div>
+                                <span class="premiere-label">
+                                    Premiere
+                                </span>
+
+                                <h5>Featured Show</h5>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="premiere-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/Eej0GoGFir1bLKOhfwpnUtyhbKe9I1OJUvnBVe1IObpPilfcC.jpg"
+                            alt="Premiere 3"
+                            loading="lazy">
+
+                        <div class="premiere-overlay">
+
+                            <div>
+                                <span class="premiere-label">
+                                    Premiere
+                                </span>
+
+                                <h5>Exclusive Picks</h5>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-6 col-md-3">
+
+                    <div class="premiere-card">
+
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/HKg2EfFn2vXCFShRqFsKrlmxZk7Oy6jr4fqQ4utln0eiyyPnA.jpg"
+                            alt="Premiere 4"
+                            loading="lazy">
+
+                        <div class="premiere-overlay">
+
+                            <div>
+                                <span class="premiere-label">
+                                    Premiere
+                                </span>
+
+                                <h5>Must Watch</h5>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             MUSIC
+        ================================================== -->
+
+        <section class="home-section">
+
+            <div class="section-heading">
+
+                <div class="section-heading-left">
+
+                    <h2>Your Music Studio</h2>
+
+                    <p>
+                        Discover music and live performances
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/Zxtj3kZfruT2C6wMYczKgyM03Ze2ymna5Pb3JCYppPtDZ5nTA.jpg"
+                            alt="Music 1"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Music</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/QLgGQKkllUJYJx57RJFjsciWnbG6MOb86lxqu7ijGDpLWezJA.jpg"
+                            alt="Music 2"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Live Music</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/xhrRnZeebRlinUxh914TpWK6sz42j8Wb2yHbK7DVTHP5Y5nTA.jpg"
+                            alt="Music 3"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Concerts</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/Bcmw5fvYWMW9UC4Y27iH8pB9vgFcIcN1Wx3jeHy7nvM8Y5nTA.jpg"
+                            alt="Music 4"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Artists</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/uhbJueHHYVSiACSIZtetP8XiaCue0OmBZ24Cglkz4XjbxyPnA.jpg"
+                            alt="Music 5"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Shows</h5>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="col-6 col-md-4 col-lg-2">
+                    <div class="category-card">
+                        <img
+                            src="https://storage.googleapis.com/a1aa/image/1nzFNOrM8ErwFtx8e2JxDvB5fCje3g286SyfRnBR5JB2jlfcC.jpg"
+                            alt="Music 6"
+                            loading="lazy">
+
+                        <div class="category-overlay">
+                            <h5>Discover</h5>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
 {% endblock %}
+```
