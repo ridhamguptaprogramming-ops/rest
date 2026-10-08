@@ -1,111 +1,572 @@
+```html
 {% extends "users/basic.html" %}
 
+{% block title %}Movies | BookMySeat{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-    <h1 class="text-center mb-5">Movies</h1>
-
-    <div class="row justify-content-center mb-5">
-        <div class="col-md-8">
-            <form method="GET" action="{% url 'movie_list' %}" class="search-bar">
-                <div class="input-group">
-                    <input
-                        class="form-control form-control-lg"
-                        name="search"
-                        placeholder="Search for Movies, Events, Plays, Sports and Activities"
-                        type="text"
-                        value="{{ request.GET.search|default_if_none:'' }}"
-                        aria-label="Search for movies"
-                    />
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">
-                            <i class="fas fa-search"></i> Search
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="row" id="movieList">
-        {% for movie in movies %}
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="{{ movie.image.url }}" class="card-img-top" alt="{{ movie.name }}" style="height: 300px; object-fit: cover;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ movie.name }}</h5>
-                    <p class="card-text">
-                        <i class="fas fa-star text-warning"></i> {{ movie.rating }}
-                    </p>
-                    <p class="card-text">
-                        <small class="text-muted">
-                            <i class="fas fa-users"></i> Cast: {{ movie.cast }}
-                        </small>
-                    </p>
-                </div>
-                <div class="card-footer bg-white border-top-0">
-                    <a href="{% url 'theater_list' movie.id %}" class="btn btn-outline-primary btn-block">
-                        View Theaters <i class="fas fa-chevron-right ml-2"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12 text-center">
-            <p class="lead">No movies found. Try a different search term.</p>
-        </div>
-        {% endfor %}
-    </div>
-</div>
-
-<!-- Bootstrap JS and dependencies -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Font Awesome -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 
 <style>
-    .card {
-        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    /* =========================
+       MOVIES PAGE
+    ========================= */
+
+    .movies-page {
+        padding: 40px 0 70px;
     }
-    .card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+
+    /* Header */
+    .movies-header {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .movies-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 15px;
+        border-radius: 50px;
+        background: rgba(229, 9, 20, 0.12);
+        border: 1px solid rgba(229, 9, 20, 0.3);
+        color: #ff5963;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .movies-header h1 {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: #fff;
+    }
+
+    .movies-header h1 span {
+        color: #e50914;
+    }
+
+    .movies-header p {
+        color: #999;
+        max-width: 650px;
+        margin: auto;
+        line-height: 1.7;
+    }
+
+    /* Search */
+    .movie-search-wrapper {
+        max-width: 850px;
+        margin: 0 auto 50px;
+    }
+
+    .movie-search {
+        display: flex;
+        align-items: center;
+        background: #19191f;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 7px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+        transition: 0.3s ease;
+    }
+
+    .movie-search:focus-within {
+        border-color: rgba(229,9,20,0.6);
+        box-shadow: 0 0 0 4px rgba(229,9,20,0.08);
+    }
+
+    .movie-search-icon {
+        color: #777;
+        font-size: 19px;
+        margin-left: 15px;
+    }
+
+    .movie-search input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: #fff;
+        padding: 14px 12px;
+        font-size: 15px;
+    }
+
+    .movie-search input::placeholder {
+        color: #777;
+    }
+
+    .movie-search button {
+        border: none;
+        background: #e50914;
+        color: #fff;
+        padding: 13px 22px;
+        border-radius: 10px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.25s ease;
+    }
+
+    .movie-search button:hover {
+        background: #b20710;
+        transform: translateY(-1px);
+    }
+
+    /* Section heading */
+    .movies-section-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 25px;
+    }
+
+    .movies-section-heading h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+    }
+
+    .movies-section-heading h2::before {
+        content: "";
+        display: inline-block;
+        width: 5px;
+        height: 24px;
+        background: #e50914;
+        border-radius: 5px;
+        margin-right: 10px;
+        vertical-align: -4px;
+    }
+
+    .movie-count {
+        color: #777;
+        font-size: 14px;
+    }
+
+    /* Movie card */
+    .movie-card-wrapper {
+        margin-bottom: 28px;
+    }
+
+    .movie-card {
+        height: 100%;
+        background: #19191f;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.35s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .movie-card:hover {
+        transform: translateY(-8px);
+        border-color: rgba(229,9,20,0.45);
+        box-shadow: 0 18px 40px rgba(0,0,0,0.4);
+    }
+
+    /* Image */
+    .movie-poster {
+        position: relative;
+        overflow: hidden;
+        background: #111;
+    }
+
+    .movie-poster img {
+        width: 100%;
+        height: 330px;
+        display: block;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .movie-card:hover .movie-poster img {
+        transform: scale(1.06);
+    }
+
+    /* Image overlay */
+    .movie-poster::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            rgba(0,0,0,0.65),
+            transparent 45%
+        );
+        pointer-events: none;
+    }
+
+    /* Rating */
+    .movie-rating {
+        position: absolute;
+        left: 14px;
+        bottom: 14px;
+        z-index: 2;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(6px);
+        padding: 7px 10px;
+        border-radius: 8px;
+        color: #ffc107;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* Card content */
+    .movie-content {
+        padding: 18px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .movie-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 9px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .movie-cast {
+        color: #999;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .movie-cast i {
+        color: #e50914;
+        margin-right: 5px;
+    }
+
+    /* Button */
+    .theater-btn {
+        margin-top: auto;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 11px 15px;
+        border: 1px solid rgba(229,9,20,0.6);
+        border-radius: 9px;
+        background: transparent;
+        color: #fff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: all 0.25s ease;
+    }
+
+    .theater-btn:hover {
+        background: #e50914;
+        border-color: #e50914;
+        color: #fff;
+        transform: translateY(-2px);
+    }
+
+    /* Empty state */
+    .empty-movies {
+        text-align: center;
+        padding: 70px 20px;
+        background: #15151b;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+    }
+
+    .empty-movies-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(229,9,20,0.1);
+        color: #e50914;
+        font-size: 28px;
+    }
+
+    .empty-movies h3 {
+        color: #fff;
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .empty-movies p {
+        color: #888;
+        margin: 0;
+    }
+
+    /* Mobile */
+    @media (max-width: 767px) {
+
+        .movies-page {
+            padding-top: 25px;
+        }
+
+        .movie-search {
+            padding: 5px;
+        }
+
+        .movie-search input {
+            min-width: 0;
+            font-size: 13px;
+        }
+
+        .movie-search button {
+            padding: 11px 14px;
+        }
+
+        .movie-search button span {
+            display: none;
+        }
+
+        .movie-poster img {
+            height: 360px;
+        }
+
+        .movies-section-heading {
+            margin-bottom: 20px;
+        }
     }
 </style>
 
-<script>
-    $(document).ready(function() {
-        // Add animation to cards on hover
-        $('.card').hover(
-            function() { $(this).addClass('shadow'); },
-            function() { $(this).removeClass('shadow'); }
-        );
 
-        // Implement client-side filtering
-        $('input[name="search"]').on('input', function() {
-            var searchTerm = $(this).val().toLowerCase();
-            $('#movieList .col-md-4').each(function() {
-                var movieTitle = $(this).find('.card-title').text().toLowerCase();
-                if (movieTitle.includes(searchTerm)) {
-                    $(this).show();
-                } else {
-                    $(this).hide();
-                }
-            });
+<div class="movies-page">
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="movies-header">
+
+        <div class="movies-badge">
+            <i class="fas fa-film"></i>
+            BOOKMYSEAT MOVIES
+        </div>
+
+        <h1>
+            Find Your <span>Movie</span>
+        </h1>
+
+        <p>
+            Discover the latest movies, check ratings and find theaters
+            near you. Book your perfect seat in just a few clicks.
+        </p>
+
+    </div>
+
+
+    <!-- ================= SEARCH ================= -->
+
+    <div class="movie-search-wrapper">
+
+        <form
+            method="GET"
+            action="{% url 'movie_list' %}"
+        >
+
+            <div class="movie-search">
+
+                <i class="fas fa-search movie-search-icon"></i>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request.GET.search|default_if_none:'' }}"
+                    placeholder="Search movies..."
+                    aria-label="Search movies"
+                    autocomplete="off"
+                >
+
+                <button type="submit">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- ================= MOVIE SECTION ================= -->
+
+    <div class="movies-section-heading">
+
+        <h2>Now Showing</h2>
+
+        <span class="movie-count">
+            {{ movies|length }} movie{{ movies|length|pluralize }}
+        </span>
+
+    </div>
+
+
+    <div class="row" id="movieList">
+
+        {% for movie in movies %}
+
+        <div class="col-lg-4 col-md-6 col-sm-6 movie-card-wrapper">
+
+            <div class="movie-card">
+
+                <!-- Poster -->
+
+                <div class="movie-poster">
+
+                    {% if movie.image %}
+                        <img
+                            src="{{ movie.image.url }}"
+                            alt="{{ movie.name }}"
+                            loading="lazy"
+                        >
+                    {% else %}
+                        <div
+                            style="
+                                height:330px;
+                                display:flex;
+                                align-items:center;
+                                justify-content:center;
+                                color:#777;
+                            "
+                        >
+                            <i
+                                class="fas fa-film"
+                                style="font-size:50px;"
+                            ></i>
+                        </div>
+                    {% endif %}
+
+                    <div class="movie-rating">
+                        <i class="fas fa-star"></i>
+                        {{ movie.rating }}
+                    </div>
+
+                </div>
+
+
+                <!-- Movie Details -->
+
+                <div class="movie-content">
+
+                    <h3
+                        class="movie-title"
+                        title="{{ movie.name }}"
+                    >
+                        {{ movie.name }}
+                    </h3>
+
+
+                    <p class="movie-cast">
+
+                        <i class="fas fa-users"></i>
+
+                        <strong>Cast:</strong>
+
+                        {{ movie.cast|default:"Cast information unavailable" }}
+
+                    </p>
+
+
+                    <a
+                        href="{% url 'theater_list' movie.id %}"
+                        class="theater-btn"
+                    >
+
+                        <i class="fas fa-map-marker-alt"></i>
+
+                        View Theaters
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <!-- Empty state -->
+
+        <div class="col-12">
+
+            <div class="empty-movies">
+
+                <div class="empty-movies-icon">
+                    <i class="fas fa-film"></i>
+                </div>
+
+                <h3>No Movies Found</h3>
+
+                <p>
+                    We couldn't find any movies matching your search.
+                    Try another movie name.
+                </p>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+
+<!-- Font Awesome -->
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchInput = document.querySelector(
+        'input[name="search"]'
+    );
+
+    const movieCards = document.querySelectorAll(
+        "#movieList .movie-card-wrapper"
+    );
+
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", function () {
+
+        const searchTerm = this.value
+            .trim()
+            .toLowerCase();
+
+        movieCards.forEach(function (card) {
+
+            const movieTitle = card
+                .querySelector(".movie-title")
+                .textContent
+                .toLowerCase();
+
+            if (movieTitle.includes(searchTerm)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+
         });
+
     });
+
+});
 </script>
-<!-- <h1>Movies</h1>
-<ul>
-    {% for movie in movies%}
-    <li>
-        <img src="{{movie.image.url}}" alt="image" >
-        <strong>{{movie.name}}</strong>{{movie.rating}}
-        <p>Cast:{{movie.cast}}</p>
-        <a href="{% url 'theater_list' movie.id %}">View Theaters</a>
-    </li>
-    {% endfor %}
-</ul> -->
+
 {% endblock %}
+```
