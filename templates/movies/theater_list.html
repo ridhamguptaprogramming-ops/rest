@@ -1,188 +1,680 @@
-{% extends "users/basic.html" %} 
+```html
+{% extends "users/basic.html" %}
+
+{% block title %}{{ movie.name }} | Theaters | BookMySeat{% endblock %}
+
 {% block content %}
+
 <style>
-    /* Styling */
-    body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f9fa;
-  color: #333;
-  margin: 0;
-  padding: 0;
-}
+    /* =========================================
+       THEATER PAGE
+    ========================================= */
 
-.container {
-  padding: 20px;
-  max-width: 900px;
-  margin: 0 auto;
-}
+    .theater-page {
+        padding: 35px 0 70px;
+        color: #fff;
+    }
 
-.movie-title {
-  font-size: 28px;
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 20px;
-}
+    /* =========================================
+       MOVIE HEADER
+    ========================================= */
 
-/* Theatre Info Styling */
-.theatre-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
-  flex-wrap: wrap; /* Responsive wrapping */
-}
+    .movie-header {
+        position: relative;
+        overflow: hidden;
 
-.theatre-info strong {
-  font-size: 18px;
-  flex: 1;
-}
+        background:
+            linear-gradient(
+                135deg,
+                #1d1d25,
+                #111116
+            );
 
-/* Info Icons Styling */
-.info-icons {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px; /* Space between icons */
-  margin-top: 10px;
-  flex: 2;
-}
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 20px;
 
-.info-icons i {
-  margin-right: 5px;
-  font-size: 18px;
-}
+        padding: 35px 30px;
+        margin-bottom: 30px;
 
-.info-section {
-  flex: 1;
-  text-align: right;
-}
+        box-shadow: 0 18px 45px rgba(0,0,0,0.3);
+    }
 
-/* Show Times Styling */
-.show-times {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  flex-wrap: wrap; /* Responsive wrapping */
-}
+    .movie-header::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
 
-.time-box {
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px 20px;
-  text-align: center;
-  background-color: #f1f1f1;
-  margin-bottom: 10px;
-  flex: 1;
-  min-width: 100px;
-  transition: transform 0.3s ease, background-color 0.3s ease;
-}
+        right: -80px;
+        top: -90px;
 
-.time-box:hover {
-  transform: scale(1.05);
-  background-color: #28a745;
-  color: white;
-}
+        background: rgba(229,9,20,0.08);
+        border-radius: 50%;
+    }
 
-.time-box span {
-  display: block;
-  font-size: 12px;
-  color: black;
-}
-.time-box span:hover {
-  color: white;
-}
+    .movie-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
 
-/* Non-Cancellable Styling */
-.non-cancellable {
-  color: #ffc107;
-  font-size: 12px;
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-}
+        padding: 7px 14px;
+        margin-bottom: 13px;
 
-.non-cancellable i {
-  margin-right: 5px;
-}
+        border-radius: 50px;
 
-/* Responsive Styling */
-@media (max-width: 768px) {
-  .theatre-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+        background: rgba(229,9,20,0.12);
+        border: 1px solid rgba(229,9,20,0.3);
 
-  .info-section {
-    text-align: left;
-    margin-top: 10px;
-  }
+        color: #ff5c65;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: .5px;
+    }
 
-  .show-times {
-    justify-content: space-between;
-  }
+    .movie-header h1 {
+        position: relative;
+        z-index: 1;
 
-  .time-box {
-    flex: 1 1 100%;
-    margin-bottom: 10px;
-  }
-}
-  </style>
-  
-  <body>
-    <div class="container">
-      <!-- Movie Title -->
-      <div class="movie-title">Movie - {{ movie.name }}</div>
-  
-      <!-- Conditional Check for Theaters -->
-      {% if theaters %}
-        <!-- Theater List and Showtimes -->
-        {% for theater in theaters %}
-        <div class="theatre-info">
-          <div>
-            <strong>{{ theater.name }} Theater</strong>
-            <div class="info-icons mt-2">
-              <i class="fas fa-mobile-alt text-success"></i> M-Ticket
-              <i class="fas fa-utensils text-warning ms-3"></i> Food & Beverage
-              <i class="fas fa-parking text-primary ms-3"></i> Parking Available
-              <i class="fas fa-wheelchair text-info ms-3"></i> Wheelchair Access
-              <i class="fas fa-glasses text-danger ms-3"></i> 3D Show Available
-            </div>
-          </div>
+        margin: 0 0 10px;
+
+        color: #fff;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        font-weight: 800;
+    }
+
+    .movie-header h1 span {
+        color: #e50914;
+    }
+
+    .movie-header p {
+        position: relative;
+        z-index: 1;
+
+        margin: 0;
+        color: #999;
+        font-size: 14px;
+    }
+
+    /* =========================================
+       LOCATION / DATE BAR
+    ========================================= */
+
+    .location-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+
+        background: #17171d;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 13px;
+
+        padding: 16px 20px;
+        margin-bottom: 25px;
+    }
+
+    .location-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #aaa;
+        font-size: 13px;
+    }
+
+    .location-icon {
+        width: 36px;
+        height: 36px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 9px;
+
+        background: rgba(229,9,20,0.12);
+        color: #e50914;
+    }
+
+    .show-count {
+        color: #777;
+        font-size: 13px;
+    }
+
+    /* =========================================
+       THEATER CARD
+    ========================================= */
+
+    .theater-card {
+        background: #19191f;
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 16px;
+
+        margin-bottom: 16px;
+        padding: 22px;
+
+        transition: all .3s ease;
+    }
+
+    .theater-card:hover {
+        border-color: rgba(229,9,20,0.35);
+        transform: translateY(-3px);
+
+        box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+    }
+
+    .theater-main {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+
+        gap: 20px;
+    }
+
+    /* =========================================
+       THEATER INFORMATION
+    ========================================= */
+
+    .theater-info {
+        flex: 1;
+    }
+
+    .theater-name {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+
+        margin-bottom: 15px;
+    }
+
+    .theater-icon {
+        width: 40px;
+        height: 40px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(229,9,20,0.1);
+        color: #e50914;
+
+        border-radius: 9px;
+
+        font-size: 17px;
+    }
+
+    /* =========================================
+       FEATURES
+    ========================================= */
+
+    .theater-features {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+    }
+
+    .feature {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+
+        padding: 6px 9px;
+
+        background: #23232a;
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 7px;
+
+        color: #999;
+        font-size: 11px;
+    }
+
+    .feature i {
+        color: #e50914;
+    }
+
+    /* Different feature icon colors */
+
+    .feature.mticket i {
+        color: #28a745;
+    }
+
+    .feature.food i {
+        color: #ffc107;
+    }
+
+    .feature.parking i {
+        color: #4dabf7;
+    }
+
+    .feature.wheelchair i {
+        color: #17a2b8;
+    }
+
+    .feature.three-d i {
+        color: #ff4757;
+    }
+
+    /* =========================================
+       SHOW TIME
+    ========================================= */
+
+    .show-section {
+        min-width: 160px;
+        text-align: right;
+    }
+
+    .show-label {
+        display: block;
+
+        color: #777;
+        font-size: 11px;
+
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .show-time {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+
+        padding: 10px 14px;
+
+        background: rgba(40,167,69,0.08);
+        border: 1px solid rgba(40,167,69,0.3);
+
+        border-radius: 9px;
+
+        color: #62d47d;
+        font-size: 13px;
+        font-weight: 600;
+
+        margin-bottom: 10px;
+    }
+
+    .show-time i {
+        font-size: 12px;
+    }
+
+    /* =========================================
+       BOOK BUTTON
+    ========================================= */
+
+    .book-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+
+        width: 160px;
+
+        padding: 11px 16px;
+
+        border-radius: 9px;
+
+        background: #e50914;
+        border: 1px solid #e50914;
+
+        color: #fff !important;
+
+        text-decoration: none;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        transition: all .25s ease;
+    }
+
+    .book-button:hover {
+        background: #b20710;
+        border-color: #b20710;
+
+        transform: translateY(-2px);
+
+        box-shadow: 0 7px 18px rgba(229,9,20,0.25);
+    }
+
+    /* =========================================
+       NON CANCELLABLE
+    ========================================= */
+
+    .non-cancellable {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+
+        margin-top: 8px;
+
+        color: #d39e00;
+        font-size: 11px;
+    }
+
+    .non-cancellable i {
+        font-size: 7px;
+    }
+
+    /* =========================================
+       EMPTY STATE
+    ========================================= */
+
+    .empty-state {
+        text-align: center;
+
+        background: #17171d;
+        border: 1px solid rgba(255,255,255,0.07);
+
+        border-radius: 18px;
+
+        padding: 65px 20px;
+    }
+
+    .empty-icon {
+        width: 70px;
+        height: 70px;
+
+        margin: 0 auto 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 50%;
+
+        background: rgba(229,9,20,0.1);
+        color: #e50914;
+
+        font-size: 27px;
+    }
+
+    .empty-state h3 {
+        color: #fff;
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .empty-state p {
+        max-width: 450px;
+        margin: auto;
+
+        color: #888;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================= */
+
+    @media (max-width: 768px) {
+
+        .theater-page {
+            padding-top: 20px;
+        }
+
+        .movie-header {
+            padding: 25px 20px;
+        }
+
+        .location-bar {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .theater-main {
+            flex-direction: column;
+        }
+
+        .show-section {
+            width: 100%;
+            text-align: left;
+            min-width: 0;
+
+            padding-top: 15px;
+
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+
+        .book-button {
+            width: 100%;
+        }
+
+        .show-time {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+
+        .theater-card {
+            padding: 17px;
+        }
+
+        .theater-features {
+            gap: 6px;
+        }
+
+        .feature {
+            font-size: 10px;
+        }
+    }
+</style>
+
+
+<div class="theater-page">
+
+    <!-- =========================================
+         MOVIE HEADER
+    ========================================= -->
+
+    <div class="movie-header">
+
+        <div class="movie-badge">
+            <i class="fas fa-film"></i>
+            SELECT A THEATER
         </div>
-  
-        <div class="show-times">
-          <div class="time-box">
-            {{ theater.time }}
-            <a href="{% url 'book_seats' theater.id %}">
-              <span>Book Now</span>
-            </a>
-          </div>
-        </div>
-        {% endfor %}
-      {% else %}
-        <!-- Message when no theaters are available -->
-        <div class="no-theaters mt-4">
-          <p>Sorry, no theaters are available for this movie at the moment.</p>
-        </div>
-      {% endif %}
-  
-      <div class="non-cancellable mt-4">
-        <i class="fas fa-circle text-warning"></i> Non-cancellable
-      </div>
+
+        <h1>
+            {{ movie.name }}
+        </h1>
+
+        <p>
+            Choose your preferred theater and showtime to continue booking.
+        </p>
+
     </div>
-  </body>
-<!-- <h1>Theater for {{movie.name}}</h1>
-<ul>
-  {% for theater in theaters %}
-  <li>
-    <strong>{{theater.name}}</strong>{{theater.time}}
-    <a href="{% url 'book_seats' theater.id %}">View Seats</a>
-  </li>
-  {% endfor %}
-</ul> -->
+
+
+    {% if theaters %}
+
+        <!-- =====================================
+             LOCATION BAR
+        ===================================== -->
+
+        <div class="location-bar">
+
+            <div class="location-info">
+
+                <div class="location-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+
+                <div>
+                    <strong style="color:#fff;">
+                        Available Theaters
+                    </strong>
+
+                    <div style="font-size:11px; margin-top:2px;">
+                        Select a theater and showtime
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="show-count">
+
+                <i class="fas fa-building me-1"></i>
+
+                {{ theaters|length }}
+                theater{{ theaters|length|pluralize }}
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             THEATER LIST
+        ===================================== -->
+
+        {% for theater in theaters %}
+
+            <div class="theater-card">
+
+                <div class="theater-main">
+
+                    <!-- Theater Information -->
+
+                    <div class="theater-info">
+
+                        <div class="theater-name">
+
+                            <div class="theater-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+
+                            <span>
+                                {{ theater.name }}
+                            </span>
+
+                        </div>
+
+
+                        <!-- Features -->
+
+                        <div class="theater-features">
+
+                            <div class="feature mticket">
+                                <i class="fas fa-mobile-alt"></i>
+                                M-Ticket
+                            </div>
+
+                            <div class="feature food">
+                                <i class="fas fa-utensils"></i>
+                                Food & Beverage
+                            </div>
+
+                            <div class="feature parking">
+                                <i class="fas fa-parking"></i>
+                                Parking
+                            </div>
+
+                            <div class="feature wheelchair">
+                                <i class="fas fa-wheelchair"></i>
+                                Wheelchair Access
+                            </div>
+
+                            <div class="feature three-d">
+                                <i class="fas fa-glasses"></i>
+                                3D Available
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Showtime -->
+
+                    <div class="show-section">
+
+                        <span class="show-label">
+                            Showtime
+                        </span>
+
+                        <div class="show-time">
+
+                            <i class="far fa-clock"></i>
+
+                            {{ theater.time }}
+
+                        </div>
+
+
+                        <a
+                            href="{% url 'book_seats' theater.id %}"
+                            class="book-button"
+                        >
+
+                            <i class="fas fa-ticket-alt"></i>
+
+                            Book Now
+
+                            <i class="fas fa-arrow-right"></i>
+
+                        </a>
+
+
+                        <div class="non-cancellable">
+
+                            <i class="fas fa-circle"></i>
+
+                            Non-cancellable
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <!-- =====================================
+             NO THEATERS
+        ===================================== -->
+
+        <div class="empty-state">
+
+            <div class="empty-icon">
+
+                <i class="fas fa-building"></i>
+
+            </div>
+
+            <h3>
+                No Theaters Available
+            </h3>
+
+            <p>
+                Sorry, there are currently no theaters or showtimes
+                available for <strong>{{ movie.name }}</strong>.
+                Please check again later.
+            </p>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- Font Awesome -->
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+>
+
 {% endblock %}
+```
