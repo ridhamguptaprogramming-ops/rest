@@ -104,6 +104,9 @@ WSGI_APPLICATION = "bookmyseat.wsgi.application"
 # Database
 # =========================
 
+import os
+import dj_database_url
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
@@ -115,14 +118,12 @@ if DATABASE_URL:
         )
     }
 else:
-    # Local development
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR / "db.sqlite3",
         }
     }
-
 
 # =========================
 # Email
